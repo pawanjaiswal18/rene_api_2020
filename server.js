@@ -12,7 +12,13 @@ app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'html');
 app.set('view engine', 'ejs');
 
+const https = require('https');
+const fs = require('fs');
 
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
 const db = require('./app/config/db.config.js');
 
 // force: true will drop the table if it already exists
@@ -42,11 +48,7 @@ require('./app/route/discountCoupon.route.js')(app);
 require('./app/route/yourConfidence.route.js')(app);
 
 // Create a Server
-var server = app.listen(8080, function () {
-
-
-    var host = server.address().address
-    var port = server.address().port
-
-    console.log("App listening at http://%s:%s", host, port)
-})
+ https.createServer(options, function (req, res) {
+    res.writeHead(200);
+    res.end("hello world\n");
+}).listen(8000);
