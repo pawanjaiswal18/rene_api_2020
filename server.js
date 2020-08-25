@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var publicDir = require('path').join(__dirname,'/public');
-app.use(express.static(publicDir)
+app.use(express.static(publicDir));
 
 var fs = require('fs');
 var  options = {
