@@ -1,7 +1,15 @@
 var express = require('express');
 var app = express();
 var publicDir = require('path').join(__dirname,'/public');
-app.use(express.static(publicDir));
+app.use(express.static(publicDir)
+
+var fs = require('fs');
+var  options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
+var https = require('https');
+
 
 
 var cors=require('cors');
@@ -12,13 +20,7 @@ app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'html');
 app.set('view engine', 'ejs');
 
-const https = require('https');
-const fs = require('fs');
 
-const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-};
 const db = require('./app/config/db.config.js');
 
 // force: true will drop the table if it already exists
@@ -48,7 +50,10 @@ require('./app/route/discountCoupon.route.js')(app);
 require('./app/route/yourConfidence.route.js')(app);
 
 // Create a Server
- https.createServer(options, function (req, res) {
-    res.writeHead(200);
-    res.end("hello world\n");
-}).listen(8000);
+var server = https.createServer(options, app).listen(8080, function () {
+
+    var host = server.address().address
+    var port = server.address().port
+
+    console.log("App listening at http://%s:%s", host, port)
+})
